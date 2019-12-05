@@ -1,0 +1,275 @@
+#include <iostream>
+#include <string>
+#include<Windows.h>
+using namespace std;
+
+#define IDLEN 3
+#define PASSWORDLEN 8
+#define IDMAX 10
+
+struct ID
+{
+	string Id;
+	string Password;
+	string Name;
+	int Age;
+	string PhonNumber;
+	int Mileage;
+};
+
+void Menu(int Num)
+{
+	system("cls");
+	cout << "=====Login=====(회원수[" << Num << "명])" << endl;
+	cout << "   1.회원 가입" << endl;
+	cout << "   2.로그인" << endl;
+	cout << "   3.종료" << endl;
+	cout << "입력 : ";
+}
+
+bool StringCheck(char Start, char End, char Check)
+{
+	if (Check >= Start && Check <= End)
+		return true;
+	else return false;
+}
+
+
+void Join(ID* P1,int Id_Count,ID Id_List[])
+{
+	bool Flag, Flag2, Flag3;
+	int CountNum = 0;
+	string CheckPassword;
+	while (1)
+	{
+		Flag = true;
+		Flag3 = true;
+		system("cls");
+		cout << "아이디 입력([3글자↑] AND [한글X]) : ";
+		cin >> P1->Id;
+		for (int i = 0; i < P1->Id.length(); i++)
+		{
+			if (StringCheck('A', 'Z', P1->Id[i]) == false && StringCheck('a', 'z', P1->Id[i]) == false
+				&& StringCheck('0', '9', P1->Id[i]) == false)
+			{
+				Flag = false;
+				break;
+			}
+		}
+		for (int i = 0; i < Id_Count; i++)
+		{
+			if (Id_List[i].Id == P1->Id)
+				Flag3 = false;
+		}
+		if (!Flag3)
+		{
+			cout << "동일한 아이디가 존재합니다." << endl;
+		}
+		if (Flag && Flag3 && P1->Id.length() >= IDLEN)
+			break;
+		if (!Flag)
+			cout << "id가 영문이 아닙니다." << endl;
+		if (P1->Id.length() < IDLEN)
+			cout << "id가 세글자 이하 입니다." << endl;
+		system("pause");
+	}
+	while (1)
+	{
+		Flag = true;
+		Flag2 = true;
+		system("cls");
+		cout << "비밀번호 입력([8글자↑]AND[영문]AND[숫자 포함]) : ";
+		cin >> P1->Password;
+		CountNum = 0;
+		for (int i = 0; i < P1->Password.length(); i++)
+		{
+			if (StringCheck('A', 'Z', P1->Password[i]) == false && StringCheck('a', 'z', P1->Password[i]) == false)
+			{
+				if (P1->Password[i] >= '0' &&P1->Password[i] <= '9')
+					CountNum++;
+				else
+					Flag = false;
+			}
+		}
+		cout << "비밀번호 확인 : ";
+		cin >> CheckPassword;
+		if (CheckPassword != P1->Password)
+			Flag2 = false;
+		if (Flag && Flag2 && P1->Password.length() >= PASSWORDLEN && CountNum >= 1)
+			break;
+		if (!Flag)
+			cout << "password가 영문이 아닙니다." << endl;
+		if (P1->Password.length() < PASSWORDLEN)
+			cout << "Password가 여덟글자 이하 입니다." << endl;
+		if (CountNum == 0)
+			cout << "숫자가 포함되어 있지 않습니다." << endl;
+		if (!Flag2)
+			cout << "비밀번호가 일치하지 않습니다." << endl;
+		system("pause");
+	}
+	system("cls");
+	cout << "닉네임 입력 : ";
+	cin >> P1->Name;
+	cout << "나이 입력 :";
+	cin >> P1->Age;
+	cout << "휴대폰 번호 입력 : ";
+	cin >> P1->PhonNumber;
+	cout << "회원가입 성공 !! 마일리지 1000원 등록" << endl;
+	P1->Mileage = 1000;
+	system("pause");
+}
+
+void SimpleShowID(ID id)
+{
+	cout << "============회원 정보============" << endl;
+	cout << "ID : " << id.Id << "   닉네임 : " << id.Name << endl;
+}
+
+void ShowID(ID id)
+{
+	system("cls");
+	SimpleShowID(id);
+	cout << " 나이 : " << id.Age << "살" << "   휴대폰 번호 : " << id.PhonNumber << endl;
+	cout << "마일리지 : " << id.Mileage << "원" << endl;
+}
+
+void Setstring(string* str, string tmp)
+{
+	string tmpstr;
+	tmpstr = *str;
+	cout << "현재 " << tmp << ": " << tmpstr << endl;
+	cout << "변경할 " << tmp << "입력 : ";
+	cin >> *str;
+	cout << tmpstr << " -> " << *str << endl;
+	system("pause");
+}
+
+void Setint(int* num, string tmp)
+{
+	int tmpint;
+	tmpint = *num;
+	cout << "현재 " << tmp << " : " << tmpint << endl;
+	cout << "변경할 " << tmp << "입력 : ";
+	cin >> *num;
+	cout << tmpint << " -> " << *num << endl;
+	system("pause");
+}
+
+void SetID(ID* id)
+{
+	int Select;
+	while (1)
+	{
+		ShowID(*id);
+		cout << "===================" << endl;
+		cout << "1.닉네임 변경" << endl;
+		cout << "2.나이 변경" << endl;
+		cout << "3.휴대폰 번호 변경" << endl;
+		cout << "4.돌아가기" << endl;
+		cout << "입력 : ";
+		cin >> Select;
+		switch (Select)
+		{
+		case 1:
+			Setstring(&id->Name, "닉네임");
+			break;
+		case 2:
+			Setint(&id->Age, "나이");
+			break;
+		case 3:
+			Setstring(&id->PhonNumber, "휴대폰 번호");
+			break;
+		case 4:
+			return;
+		}
+	}
+}
+
+
+void Display(ID* id)
+{
+	int Select;
+	while (1)
+	{
+		system("cls");
+		cout << "========Menu========" << endl;
+		cout << "  1.회원 정보" << endl;
+		cout << "  2.회원 정보 변경" << endl;
+		cout << "  3.로그아웃" << endl;
+		cout << "입력 : ";
+		cin >> Select;
+		switch (Select)
+		{
+		case 1:
+			ShowID(*id);
+			system("pause");
+			break;
+		case 2:
+			SetID(id);
+			break;
+		case 3:
+			return;
+		}
+	}
+}
+
+void main()
+{
+	int Id_Count = 0;
+	ID Id_List[IDMAX];
+	string TmpId, TmpPassword;
+	int Select;
+	bool Id_Flag, PasswordFlag, LoginFlag;
+	while (1)
+	{
+		LoginFlag = false;
+		Menu(Id_Count);
+		cin >> Select;
+		switch (Select)
+		{
+		case 1:
+			if (Id_Count >= IDMAX)
+			{
+				cout << "더이상 회원을 등록할 수 없습니다." << endl;
+				system("pause");
+				break;
+			}
+			Join(&Id_List[Id_Count],Id_Count,Id_List);
+			Id_Count++;
+			break;
+		case 2:
+			while (!LoginFlag)
+			{
+				Id_Flag = false;
+				PasswordFlag = false;
+				system("cls");
+				cout << "아이디 입력 : ";
+				cin >> TmpId;
+				cout << "비밀번호 입력 : ";
+				cin >> TmpPassword;
+				for (int i = 0; i < Id_Count; i++)
+				{
+					if (TmpId == Id_List[i].Id)
+					{
+						Id_Flag = true;
+						if (TmpPassword == Id_List[i].Password)
+						{
+							PasswordFlag = true;
+							Display(&Id_List[i]);
+							LoginFlag = true;
+							break;
+						}
+					}
+				}
+				if (!Id_Flag)
+					cout << "해당 아이디가 없습니다." << endl;
+				else if (!PasswordFlag)
+					cout << "비밀번호가 틀렸습니다." << endl;
+			}
+			break;
+		case 3:
+			return;
+		}
+	}
+}
+

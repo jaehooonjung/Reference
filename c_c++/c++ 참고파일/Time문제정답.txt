@@ -1,0 +1,47 @@
+#include<iostream>
+#include<time.h>
+#include<Windows.h>
+using namespace std;
+
+void gotoxy(int x, int y)
+{
+	COORD Pos = { x, y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
+
+
+void main()
+{
+	int CurTime, SecTime, MinTime, HourTime;
+	int Second = 0, Minute = 0, Hour = 0;
+	SecTime = clock();
+	MinTime = clock();
+	HourTime = clock();
+	gotoxy(10, 10);
+	cout << Hour << "시  " << Minute << "분  " << Second << "초";
+	while (1)
+	{
+		CurTime = clock();
+		if (CurTime - SecTime > 10)
+		{
+			Second++;
+			if (Second == 60)
+				Second = 0;
+			SecTime = CurTime;
+		}
+		if (CurTime - MinTime > 600)
+		{
+			Minute++;
+			if (Minute == 60)
+				Minute = 0;
+			MinTime = CurTime;
+		}
+		if (CurTime - HourTime > 36000)
+		{
+			Hour++;
+			HourTime = CurTime;
+		}
+		gotoxy(10, 10);
+		cout << Hour << "시  " << Minute << "분  " << Second << "초";
+	}
+}
