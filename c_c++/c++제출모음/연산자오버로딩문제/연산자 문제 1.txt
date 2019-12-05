@@ -1,0 +1,43 @@
+#include <iostream>
+using namespace std;
+
+/*
+객체 / 객체 연산자 오버로딩을 작성 하시오.
+(ex. 작은수에서 큰수로 나눌 수있게 예외처리)
+*/
+
+class Point
+{
+private:
+	int x, y;
+public:
+	Point(int a, int b) { x = a; y = b; }
+	void Print() { cout << "x = " << x << ", y = " << y << "\n"; }
+	friend Point operator / (Point main, Point tmp);
+};
+
+Point operator / (Point main, Point tmp)
+{
+	if (main.x >= tmp.x)
+		main.x /= tmp.x;
+	else
+		main.x = tmp.x / main.x;
+
+	if (main.y >= tmp.y)
+		main.y /= tmp.y;
+	else
+		main.y = tmp.y / main.y;
+	return main;
+}
+
+void main()
+{
+	Point ov1(10, 20);
+	ov1.Print();
+	int tmp1, tmp2;
+	cout << "연산할 값을 입력하세요 : ";
+	cin >> tmp1 >> tmp2;
+	Point ov2(tmp1, tmp2);
+	ov1 = ov1 / ov2;
+	ov1.Print();
+}

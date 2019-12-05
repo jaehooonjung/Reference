@@ -1,0 +1,14 @@
+﻿  Snake.cpp
+d:\강의폴더\12시반\정재훈\snakegame\snakegame\mapdrawmanager.h(13): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+d:\강의폴더\12시반\정재훈\snakegame\snakegame\snake.cpp(19): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(452): note: 'getch' 선언을 참조하십시오.
+d:\강의폴더\12시반\정재훈\snakegame\snakegame\snake.cpp(20): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _kbhit. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(458): note: 'kbhit' 선언을 참조하십시오.
+d:\강의폴더\12시반\정재훈\snakegame\snakegame\snake.cpp(22): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(452): note: 'getch' 선언을 참조하십시오.
+  코드를 생성하고 있습니다...
+  건너뛰고 있습니다... (관련된 변경 내용 없음)
+  소스.cpp
+  Game.cpp
+  SnakeGame.vcxproj -> D:\강의폴더\12시반\정재훈\SnakeGame\x64\Debug\SnakeGame.exe
+  SnakeGame.vcxproj -> D:\강의폴더\12시반\정재훈\SnakeGame\x64\Debug\SnakeGame.pdb (Full PDB)

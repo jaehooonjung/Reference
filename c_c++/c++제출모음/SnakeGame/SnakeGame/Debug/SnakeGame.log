@@ -1,0 +1,18 @@
+﻿  Block.cpp
+c:\정재훈_2\제출\snakegame\snakegame\block.cpp(15): warning C4805: '==': 연산에 'int' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+  Game.cpp
+c:\정재훈_2\제출\snakegame\snakegame\game.h(19): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(18): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(19): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(20): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(21): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(27): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\conio.h(452): note: 'getch' 선언을 참조하십시오.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(39): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1772): note: 'sprintf' 선언을 참조하십시오.
+c:\정재훈_2\제출\snakegame\snakegame\game.cpp(62): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+  소스.cpp
+c:\정재훈_2\제출\snakegame\snakegame\game.h(19): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+c:\정재훈_2\제출\snakegame\snakegame\소스.cpp(4): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+  코드를 생성하고 있습니다...
+  SnakeGame.vcxproj -> C:\정재훈_2\제출\SnakeGame\Debug\SnakeGame.exe
