@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+
+int main(void) {
+
+	int num, KOR, MATH, ENG, age;
+	char word, name[10];
+	float num_2;
+
+	printf("=====1번문제=====\n");
+	printf("단일문자를 입력하시오 : ");
+	scanf("%c", &word);
+	printf("정수를 입력하시요 : ");
+	scanf("%d", &num);
+	printf("%c + %d =%c\n", word, num,word+num);
+
+	printf("=====2번문제=====\n");
+	printf("소숫점수를 입력하시오 : ");
+	scanf("%f", &num_2);
+	printf("소숫점수 : %.2f\n", num_2);
+
+	printf("=====3번문제=====\n");
+	printf("국어점수를 입력하시오 : ");
+	scanf("%d", &KOR);
+	printf("수학점수를 입력하시오 : ");
+	scanf("%d", &MATH);
+	printf("영어점수를 입력하시오 : ");
+	scanf("%d", &ENG);
+	printf("국어점수 : %d\n수학점수 : %d\n영어점수 : %d\n합계점수 : %d   평균점수 : %.2f\n", KOR, MATH, ENG, KOR + MATH + ENG, (float)(KOR + MATH + ENG) / 3);
+
+	printf("=====4번문제=====\n");
+	printf("이름을 입력하시오 : ");
+	scanf("%s", name);
+	printf("%s님의 나이를 입력하시오 : ", name);
+	scanf("%d", &age);
+	printf("%s님의 나이는 %d세입니다.", name, age);
+	return 0;
+}

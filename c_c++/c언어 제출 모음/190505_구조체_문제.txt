@@ -1,0 +1,67 @@
+#include<stdio.h>
+#define SIZE 256
+#define HOW_MANY_PEOPLE 5
+
+typedef struct people
+{
+	char name[SIZE];
+	int age;
+	float height;
+}people;
+
+void showpeople(people *p);
+void setpeople(people *p);
+void order(people *p, people *p2);
+
+void main()
+{
+	people p[HOW_MANY_PEOPLE];
+	people p2[HOW_MANY_PEOPLE];
+	for (int i = 0; i < HOW_MANY_PEOPLE; i++)
+		setpeople(&p[i]);
+	printf("\n");
+	printf("\n");
+	order(p, p2);
+	showpeople(p2);
+}
+
+void showpeople(people *p)
+{
+	for (int i = 0; i < HOW_MANY_PEOPLE; i++)
+	{
+		printf("========================\n");
+		printf("1. name : %s\n", p[i].name);
+		printf("2. age %d\n", p[i].age);
+		printf("3.height %.2f\n", p[i].height);
+		printf("========================\n");
+	}
+}
+
+void setpeople(people *p)
+{
+	printf("=======================\n");
+	printf("1. name?: ");
+	scanf("%s", p->name);
+	printf("2. age? : ");
+	scanf("%d", &p->age);
+	printf("3.height? : ");
+	scanf("%f", &p->height);
+	printf("========================\n");
+}
+
+void order(people *p, people *p2)
+{
+	int grade;
+	for (int a = 0; a < (HOW_MANY_PEOPLE); a++)
+	{
+		grade = 0;
+		for (int b = 0; b < HOW_MANY_PEOPLE; b++)
+		{
+			if (p[a].age == p[b].age && p[a].height < p[b].height)
+				grade++;
+			if (p[a].age < p[b].age)
+				grade++;
+		}
+		p2[grade] = p[a];
+	}
+}

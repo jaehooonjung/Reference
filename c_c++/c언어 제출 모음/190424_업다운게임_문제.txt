@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> // 시간값 사용하는 헤더파일
+#define TRUE 1
+
+int select;
+int max = 100;
+int min = 0;
+int turn_max = 10;
+int input;
+
+void GameStart()
+{
+	srand((unsigned)time(NULL));
+	int answer = (rand() % max);
+	int myturn = turn_max;
+
+	while(answer < min)
+		answer = (rand() % max);
+
+
+	while (myturn)
+	{
+		system("cls");
+		printf("범위 : %d ~ %d\n", min, max);
+		printf("제한 Turn : %d\n", turn_max);
+		printf("=======%d턴=====\n", myturn); //현재턴으로 수정
+		printf("입력 : ");
+		scanf("%d", &input);
+		if (input < answer)
+		{
+			printf("up!!!!");
+			system("pause");
+		}
+		else if (input > answer)
+		{
+			printf("down!!!!");
+			system("pause");
+		}
+		else if (input == answer)
+		{
+			printf("정답입니다.");
+			system("pause");
+			return;
+		}
+		myturn--;
+
+	}
+	system("cls");
+	printf("게임오버 입니다. 메인으로 돌아갑니다 ㅎㅎ");
+	system("pause");
+}
+	
+
+void GameSetting()
+{
+	while (TRUE)
+	{
+		system("cls");
+		printf("=========게임 설정=========\n");
+		printf("\t1. 최대, 최소범위 설정\n");
+		printf("\t2. 최대 Turn수 설정\n");
+		printf("\t3. 돌아가기\n");
+		printf("입력 : ");
+		scanf("%d", &select);
+		switch (select)
+		{
+		case 1:
+			system("cls");
+			printf("(현재 : %d) 최소 값 변경 :",min);
+			scanf("%d", &min);
+			printf("(현재 : %d) 최대 값 변경 :", max);
+			scanf("%d", &max);
+			break;
+		case 2:
+			system("cls");
+			printf("(현재 : %d) 최대 Turn 값 변경 :", turn_max);
+			scanf("%d", &turn_max);
+			break;
+		case 3:
+			return;
+		}
+	}
+}
+
+
+
+
+void main()
+{
+	while (TRUE)
+	{
+		system("cls");
+		printf("=========UPDOWN=========\n");
+		printf("\t1. 게임시작\n");
+		printf("\t2. 범위설정\n");
+		printf("\t3. 종료\n");
+		printf("입력 : ");
+		scanf("%d", &select);
+		switch (select)
+		{
+		case 1: 
+			GameStart();
+			break;
+		case 2:
+			GameSetting();
+			break;
+		case 3:
+			return;
+		}
+	}
+	
+
+}

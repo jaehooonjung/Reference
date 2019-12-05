@@ -1,0 +1,20 @@
+#include<stdio.h>
+
+void main() {
+	int save_ea, ea, price=2500 ,saleprice=2400,total=0;
+	printf("구매할 도시락 갯수를 입력하시오 : ");
+	scanf("%d", &ea);
+	save_ea = ea;
+	if (ea<11)
+	{
+		total = save_ea*price;
+	}
+	else
+	{
+		ea -= 10;
+		total += price * 10;
+		total += saleprice * ea;
+	}
+	printf("도시락 %d개 가격 : %d원", save_ea, total);
+}
+

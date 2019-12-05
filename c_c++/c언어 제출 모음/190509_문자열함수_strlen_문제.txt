@@ -1,0 +1,22 @@
+#include<stdio.h>
+#include<string.h>
+#define LENGTH 10
+
+int S_length(char str[])
+{
+	int count=0;
+	for (int i = 0; i < str[i] != NULL; i++)
+	{
+		if (str[i] != NULL)
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+void main()
+{
+	char str[LENGTH] = "HELLO";
+	printf("%s문자열의 길이 : %d\n", str, S_length(str));
+}

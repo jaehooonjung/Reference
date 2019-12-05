@@ -1,0 +1,65 @@
+#include<stdio.h>
+#include<windows.h>//system("cls").system("pause")
+
+void main() {
+	int kor,eng,math,Select;
+	char name[15];    //문자열 배열로 받는 방법은 복습하기!
+	int flag = 0,flag2 = 0;
+	while (1)
+	{
+		system("cls");
+		printf("================\n");
+		printf("   학생성적관리\n");
+		printf("================\n");
+		printf(" 1. 학생 이름등록\n");
+		printf(" 2. 3과목 점수등록\n");
+		printf(" 3. 점수확인\n");		
+		printf(" 4. 종료\n");
+		printf("================\n");
+		printf(" 입력 : ");
+		scanf("%d", &Select);
+					//이 위치에 system("cls");를 썻다면 굳이 case나올때마다 쓸 필요가;;
+		switch (Select)
+		{
+		case 1:
+		system("cls");
+			printf("이름 입력 : ");
+			scanf("%s", name); //문자열 출력은 %s로 받기 , 배열은 그 자체가 주소임!
+			flag = 1;
+			break;
+		case 2:
+			system("cls");
+			printf("세과목의 성적을 입력하시오 \n");
+			printf("국어 : ");
+			scanf("%d", &kor);
+			printf("수학 : ");
+			scanf("%d", &math);
+			printf("영어 : ");
+			scanf("%d", &eng);
+			flag2 = 1;
+			break;
+		case 3:
+			system("cls");
+
+			if (flag == 0)
+				printf("이름을 입력하시오\n");
+			if (flag2 == 0)
+				printf("점수를 입력하시오.\n");
+			else if (flag == 1 && flag2 == 1) {
+				printf("================\n");
+				printf("%s님의 점수\n",name);
+				printf("국어 점수 : %d\n", kor);
+				printf("수학 점수 : %d\n", math);
+				printf("영어 점수 : %d\n", eng);
+				printf("합계 점수 : %d\n", kor+math+eng);
+				printf("평균 점수 : %.2f\n", (float)(kor + math + eng)/3); //평균값이라든가 합계는
+										//따로만들어서 쓰기!
+				printf("================\n");
+			}
+			system("pause");
+			break;
+		case 4:               
+			return;
+		}
+	}
+}

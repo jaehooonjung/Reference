@@ -1,0 +1,382 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<Windows.h>
+#include<string.h>
+#include <time.h>
+#include <conio.h>
+
+#define NAME_LENGTH 256
+#define CHARCTER_MAX 8
+#define PLAYER 0
+#define SAVESLOT 10
+#define SAVESLOT 10
+#define OFFENSE 1
+#define DEFENSE 2
+#define WIN 1
+#define LOSE 0
+#define BATTLE_NOW 3
+
+typedef struct Character
+{
+	char name[NAME_LENGTH];
+	int demage;
+	int defense;
+	int hp;
+	int max_hp;
+	int exp;
+	int max_exp;
+	int get_exp;
+	int level;
+	int opfense_defense_mode;
+	int attackspeed;
+}character;
+
+void Default_File_Load(character*ch, FILE*f, int i);
+void Status_Basic_Setting(character*ch);
+void Show_Character_All(character*ch);
+void Save_Cheak(FILE*f);
+void Save(character*ch, FILE*f);
+void Who_Attack(character*a, character*d, char*tmp);
+void Defense_Output(character*ch, char*tmp);
+void Game_Win_Lose(character*p, character*m, int*retult);
+void Level_Up(character*ch);
+void Game_set(character*p, character*m, int result);
+void Game_start(character*p, character*m);
+
+
+void Load(character*ch, FILE*f);
+void main()
+{
+	srand((unsigned)time(NULL));
+	char player_name[NAME_LENGTH];
+	int select;
+	int dungeon_floor;
+	char txt_name[NAME_LENGTH] = { 0 };
+	int choice;
+	int result = BATTLE_NOW;
+	character*ch;
+	FILE*f = fopen("Default.txt", "r");
+	if (f == NULL)
+	{
+		printf("Default 파일이 손상되었거나 없습니다.");
+		return;
+	}
+	else
+	{
+		fscanf(f, "%d", &dungeon_floor);
+		ch = (character*)malloc(sizeof(character)*(dungeon_floor + 1));
+		for (int i = 0; i < dungeon_floor + 1; i++)
+			Default_File_Load(&ch[i], f, i);
+		fclose(f);
+	}
+
+	printf("플레이어의 이름을 입력 : ");
+	scanf("%s", ch[PLAYER].name);
+
+	for (int i = 0; i < dungeon_floor + 1; i++)
+		Status_Basic_Setting(&ch[i]);
+
+	while (1)
+	{
+		system("cls");
+		printf("======TEXT RPG DUNGEON GAME======\n");
+		printf("\t1. 던전에 입장합니다.\n");
+		printf("\t2. 플레이어의 정보\n");
+		printf("\t3. 세이브\n");
+		printf("\t4. 불러오기\n");
+		printf("\t5. 종료하기\n");
+		printf("\t입력 : ");
+		scanf("%d", &select);
+		system("cls");
+
+		switch (select)
+		{
+		case 1:
+			while (1)
+			{
+				printf("======던전 입구======\n");
+				for (int i = 1; i <= dungeon_floor; i++)
+					printf("\t%d.%d층 던전 : [%s]\n", i, i, ch[i].name);
+				printf("\t%d. 종료하기\n", dungeon_floor + 1);
+				printf("\t입력 : ");
+				scanf("%d", &select);
+				system("cls");
+				if (select == dungeon_floor + 1)
+					break;
+				else if (select > 0 && select <= dungeon_floor)
+					break;
+			}
+			Game_start(&ch[PLAYER], &ch[select]);
+			break;
+		case 2:
+			for (int i = 0; i < dungeon_floor + 1; i++)
+				Show_Character_All(&ch[i]);
+			system("pause");
+			break;
+		case 3:
+			printf("======Save======\n");
+			Save_Cheak(f);
+			printf("선택 : ");
+			scanf("%d", &select);
+			if (select <= 0 || select > SAVESLOT)
+			{
+				printf("잘못입력하셨습니다.\n");
+				system("pause");
+				break;
+			}
+			sprintf(txt_name, "%d_save_file.txt", select);
+			f = fopen(txt_name, "w");
+			fprintf(f, "%d\n", dungeon_floor);
+			for (int i = 0; i <= dungeon_floor; i++)
+				Save(&ch[i], f);
+			fclose(f);
+			break;
+		case 4:
+			printf("======Load======\n");
+			Save_Cheak(f);
+			printf("선택 : ");
+			scanf("%d", &select);
+
+			if (select <= 0 || select > SAVESLOT)
+			{
+				printf("잘못입력하셨습니다.\n");
+				system("pause");
+				break;
+			}
+			else
+			{
+				//기존의 동적할당 해제
+				free(ch);
+			}
+			sprintf(txt_name, "%d_save_file.txt", select);
+			f = fopen(txt_name, "r");
+			fscanf(f, "%d", &dungeon_floor);
+			ch = (character*)malloc(sizeof(character)*(dungeon_floor + 1));
+
+			for (int i = 0; i <= dungeon_floor + 1; i++)
+				Load(&ch[i], f);
+			fclose(f);
+			break;
+		case 5:
+			free(ch);
+			printf("동적할당 해제 완료\n");
+			return;
+		}
+	}
+}
+void Default_File_Load(character*ch, FILE*f, int i)
+{
+	if (i != PLAYER)
+		fscanf(f, "%s", ch->name);
+
+	fscanf(f, "%d", &ch->demage);
+	fscanf(f, "%d", &ch->defense);
+	fscanf(f, "%d", &ch->max_hp);
+	fscanf(f, "%d", &ch->max_exp);
+	fscanf(f, "%d", &ch->get_exp);
+	fscanf(f, "%d", &ch->level);
+	fscanf(f, "%d", &ch->opfense_defense_mode);
+	fscanf(f, "%d", &ch->attackspeed);
+}
+
+void Status_Basic_Setting(character*ch)
+{
+	ch->exp = 0;
+	ch->hp = ch->max_hp;
+	ch->opfense_defense_mode = DEFENSE;
+}
+
+void Show_Character_All(character*ch)
+{
+	printf("=======%s(%dLv)=======\n", ch->name, ch->level);
+	printf("공격력 = %d\t방어력 = %d\t생명력 = %d/%d\n", ch->demage, ch->defense, ch->hp, ch->max_hp);
+	printf("경험치 = %d/%d\t GetExp = %d\t방어상태 : ", ch->exp, ch->max_exp, ch->get_exp);
+	if (ch->opfense_defense_mode == OFFENSE)
+	{
+		printf("OFF\n");
+	}
+	if (ch->opfense_defense_mode == DEFENSE)
+	{
+		printf("ON\n");
+	}
+}
+
+void Save_Cheak(FILE*f)
+{
+	char txt_name[NAME_LENGTH] = { 0 };
+	char clear[NAME_LENGTH] = { 0 };
+
+
+	for (int i = 1; i <= 10; i++)
+	{
+		printf("%d", i);
+		printf("번 슬롯 : (파일여부 : ");
+		sprintf(txt_name, "%d_save_file.txt", i);
+		f = fopen(txt_name, "r");
+		if (f == NULL)
+			printf("X)\n");
+		else
+			printf("O)\n");
+		strcpy(txt_name, clear);
+	}
+}
+
+void Save(character*ch, FILE*f)
+{
+	fprintf(f, "%s %d %d %d %d %d %d %d %d %d\n", ch->name, ch->demage, ch->defense, ch->hp, ch->max_hp, ch->exp, ch->max_exp, ch->get_exp, ch->level, ch->opfense_defense_mode, ch->attackspeed);
+}
+
+void Load(character*ch, FILE*f)
+{
+	fscanf(f, "%s ", ch->name);
+	fscanf(f, "%d ", &ch->demage);
+	fscanf(f, "%d", &ch->defense);
+	fscanf(f, "%d ", &ch->hp);
+	fscanf(f, "%d ", &ch->max_hp);
+	fscanf(f, "%d ", &ch->exp);
+	fscanf(f, "%d ", &ch->max_exp);
+	fscanf(f, "%d ", &ch->get_exp);
+	fscanf(f, "%d ", &ch->level);
+	fscanf(f, "%d", &ch->opfense_defense_mode);
+	fscanf(f, "%d", &ch->attackspeed);
+
+}
+
+void Game_start(character*p, character*m)
+{
+	char ch;
+	char tmp[256];
+	int count = 0;
+	int result = BATTLE_NOW;
+	system("cls");
+	printf("z는 공격 , x는 방어전환\n");
+	Show_Character_All(p);
+	Show_Character_All(m);
+	while (result == BATTLE_NOW)
+	{
+		if (kbhit())
+		{
+			ch = getch();
+			if (ch == 'z')
+				Who_Attack(p, m, tmp);
+			else if (ch == 'x')
+				Defense_Output(p, tmp);
+			system("cls");
+			printf("z는 공격 , x는 방어전환\n");
+			Show_Character_All(p);
+			Show_Character_All(m);
+			printf("%s가 %s했다\n", p->name, tmp);
+		}
+		Sleep(10);
+		count++;
+		if (count >= m->attackspeed)
+		{
+			count = 0;
+			if (rand() % 2 == 0)
+				Who_Attack(m, p, tmp);
+			else
+				Defense_Output(m, tmp);
+			system("cls");
+			printf("z는 공격 , x는 방어전환\n");
+			Show_Character_All(p);
+			Show_Character_All(m);
+			printf("%s가 %s했다!!\n", m->name, tmp);
+			if (p->hp <= 0)
+			{
+				result = LOSE;
+				Game_set(p, m, result);
+			}
+			else if (m->hp <= 0)
+				result = WIN;
+			Game_set(p, m, result);
+		}
+
+	}
+}
+
+
+
+void Who_Attack(character*a, character*d, char*tmp)
+{
+	a->opfense_defense_mode = OFFENSE;
+	if (d->opfense_defense_mode == DEFENSE)
+	{
+		if (a->demage < d->defense)
+		{
+			a->hp -= (d->defense - a->demage);
+			strcpy(tmp, "공격 반사 당");
+		}
+		else if (a->demage > d->defense)
+		{
+			d->hp -= (a->demage - d->defense);
+			strcpy(tmp, "공격 성공");
+		}
+		else
+			strcpy(tmp, "공격 실패 ");
+
+	}
+	else
+	{
+		d->hp -= (a->demage);
+		strcpy(tmp, "공격 성공");
+	}
+}
+
+void Defense_Output(character*ch, char*tmp)
+{
+	ch->opfense_defense_mode = DEFENSE;
+	strcpy(tmp, "방어");
+}
+
+void Game_set(character*p, character*m, int result)
+{
+	if (result == WIN)
+	{
+		system("cls");
+		printf("%s가 승리 !!\n", p->name);
+		printf("%s가 %d의 경험치를 얻었습니다!!", p->name, m->get_exp);
+		p->exp += m->get_exp;
+		Level_Up(p);
+		m->hp = m->max_hp;
+		system("pause");
+		return;
+
+	}
+	else if (result == LOSE)
+	{
+		system("cls");
+		printf("%s가 패배 ", p->name);
+		printf("%s가 %d의 경험치를 잃었습니다!!", p->name, p->exp);
+		m->exp += p->exp;
+		Level_Up(m);
+		p->hp = p->max_hp;
+		p->exp = 0;
+		system("pause");
+		return;
+
+	}
+
+}
+
+void Game_Win_Lose(character*p, character*m, int*result)
+{
+	if (p->hp <= 0)
+		*result = LOSE;
+	else if (m->hp <= 0)
+		*result = WIN;
+}
+
+void Level_Up(character*ch)
+{
+	while (ch->exp >= ch->max_exp)
+	{
+		ch->exp = (ch->exp - ch->max_exp); // 경험치 계산
+		ch->max_exp += 5; //경험치 최대치 상승
+		ch->level++; //레벨업
+		ch->max_hp += rand() % 10; // 체력 상승
+		ch->hp = ch->max_hp;
+		ch->demage += rand() % 5; // 뎀지 업
+		printf("%d -> %d 레벨업!!\n", ch->level - 1, ch->level);
+
+	}
+}

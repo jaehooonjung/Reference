@@ -1,0 +1,25 @@
+#include<stdio.h>
+#include<string.h>
+
+void S_ADD(char str[])
+{
+	char tmp[10];
+	int i = 0;
+	while (str[i] != NULL)
+		i++;
+	printf("추가할 문자열 입력 : ");
+	scanf("%s", tmp);
+	for (int j = 0; tmp[j] !=NULL ; i++,j++)
+	{
+		str[i] = tmp[j];
+	}
+
+}
+
+void main()
+{
+	char str[10] = "HELLO";
+	printf("%s\n", str);
+	S_ADD(str);
+	printf("%s\n",str);
+} 

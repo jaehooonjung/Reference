@@ -1,0 +1,47 @@
+#include<stdio.h>
+void main()
+{
+	printf("2번문제\n");
+	int deposit = 0, money = 1;
+	for (int day = 1; day <= 30; day++) //초기값선언에 money도 같이선언하자!
+	{
+		deposit += money;
+		money *= 2;  //증감식 뒤에 넣어도 된다
+	}
+	printf("30일 동안 저축한 금액 : %d원\n", deposit);
+
+	printf("3번문제\n");
+	int sum = 0;
+	for (int i = 1; i <= 1000; i++)
+	{
+		if (i % 3 == 0)
+		{
+			if (i % 5 == 0)
+			{
+				sum += i;
+				continue; //이 continue는 중복된다.. 삭제!
+			}
+			continue;
+		}
+		else
+		{
+			sum += i;
+		}
+	}
+	printf("1~1000사이의 합 : %d\n(3의 배수는 제외하며 3과 5의 공배수는 제외하지 않는다)\n", sum);
+
+	printf("4번문제\n");
+	int sum4=0;
+	for (int num=1;num>0;num++)  //무한루프니까 for문 중간의 조건식은 지워주자
+	{
+		if(num%2==1)
+		{
+			sum4 += num;  // if(sum+i >=10000){break;} 위에 이식을 넣어주면 밑에 식 두번 필요없음
+			if (sum4>=10000)
+			{
+				printf("i: %d,\tSum : %d\n", num, sum4-num);  
+				break;
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+#include<stdio.h>
+
+void main()
+{
+	for (int dan =2; dan < 10; dan++)
+	{
+		printf("====%d´Ü====\t", dan);
+	}
+	printf("\n");
+
+	for (int num = 1; num < 10; num++)
+	{
+		for (int dan = 2,sum; dan < 10; dan++)
+		{
+			sum = dan*num;
+			printf("%d * %d = %d\t",dan,num,sum);
+		}
+		printf("\n");
+	}
+}

@@ -1,0 +1,442 @@
+#include<stdio.h>
+#include<conio.h>
+#include<Windows.h>
+//////////////////////////////////////////////////////
+#define col GetStdHandle(STD_OUTPUT_HANDLE) 
+#define BLACK SetConsoleTextAttribute( col,0x0000 );
+#define DARK_BLUE SetConsoleTextAttribute( col,0x0001 );
+#define GREEN SetConsoleTextAttribute( col,0x0002 );
+#define BLUE_GREEN SetConsoleTextAttribute( col,0x0003 );
+#define BLOOD SetConsoleTextAttribute( col,0x0004 );
+#define PUPPLE SetConsoleTextAttribute( col,0x0005 );
+#define GOLD SetConsoleTextAttribute( col,0x0006 );         //색상 지정
+#define ORIGINAL SetConsoleTextAttribute( col,0x0007 );
+#define GRAY SetConsoleTextAttribute( col,0x0008 );
+#define BLUE SetConsoleTextAttribute( col,0x0009 );
+#define HIGH_GREEN SetConsoleTextAttribute( col,0x000a );
+#define SKY_BLUE SetConsoleTextAttribute( col,0x000b );
+#define RED SetConsoleTextAttribute( col,0x000c );
+#define PLUM SetConsoleTextAttribute( col,0x000d );
+#define YELLOW SetConsoleTextAttribute( col,0x000e );
+//////////////////////////////////////////////////////
+#define WALL 1
+#define NULL 0
+#define Y 0
+#define X 1
+#define CHARACTER 2
+#define POTAL_MAX 4//포탈 갯수
+#define TRIGGER_MAX 3//사라지는 벽 갯수
+#define ENTRY_START 10
+#define EXIT_START 20
+#define TRIGGER_BUTTON 30 //버튼
+#define TRIGGER_WALL 40 //사라지는벽
+#define BIND 0 //이동불가지역
+#define FREE 1 //이동가능
+#define TRAP 50  //함정
+#define TRAP_MAX 2 //함정갯수
+#define BIZZ  60//움직일 수 있는 구슬
+#define HOLE 70 // 구슬을 넣는 위치
+#define DOOR  130// 구슬을 넣으면 제거되는 벽
+#define DOOR_OPEN 1 
+#define DOOR_CLOSE 0 
+#define DOORSTATUS 3
+#define BIZZ_MAX 2 //구슬의 갯수
+#define RESTART_Y 1
+#define RESTART_X 1
+#define GOAL 9
+#define LEFT 'a'
+#define RIGHT 'd'
+#define UP 'w'
+#define DOWN 's'
+#define SPACEBAR 32
+#define WIDTH 17
+#define HEIGHT 10
+int map[HEIGHT][WIDTH] = {
+   { 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,1,1,1,1, },
+   { 1,   2,   0,   0,   32,   0,   0,   1,   20,   1,131,0,9,1 },
+   { 1,   1,   1,   0,   1,   50,   0,   1,   30,   1,130,1,1,1 },
+   { 1,   12,   40,   42,   1,   0,   0,   1,   11,   1,0,0,0,1 },
+   { 1,   1,   1,   1,   1,   0,   1,   10,   1,   1,0,60,0,1 },
+   { 1,   0,   0,   0,   1,   0,   0,   0,   21,   1,0,70,0,1 },
+   { 1,   0,   1,   0,   1,   1,   1,   1,   1,   1,0,0,0,1 },
+   { 1,   0,   51,   0,   31,   0,   0,   0,   1,   1,0,61,0,1 },
+   { 1,   22,   1,   0,   0,   0,   1,   0,   41,   0,0,71,0,1 },
+   { 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,1,1,1,1 } };
+
+int character[2];
+int Entry_Potal[POTAL_MAX][2];
+int Exit_Potal[POTAL_MAX][2];
+int Trigher_button[TRIGGER_MAX][2];
+int Trigher_wall[TRIGGER_MAX][2];
+int trap[TRAP_MAX][2];
+int goal[2];
+int EXIT = 1;
+int bizz[BIZZ_MAX][2];
+int hole[BIZZ_MAX][3];
+int door[BIZZ_MAX][3];
+int LastObjectIndex = NULL;
+int bizzobjectindex[BIZZ_MAX];
+
+
+void Init()
+{
+	int Width = (WIDTH * 2) + 1;
+	int Height = HEIGHT + 1;
+
+	char buf[256];
+	sprintf(buf, "mode con: lines=%d cols=%d", Height, Width);
+	system(buf);
+	for (int y = 0; y < HEIGHT; y++)
+	{
+		for (int x = 0; x < WIDTH; x++)
+		{
+			if (map[y][x] == CHARACTER)
+			{
+				character[X] = x;
+				character[Y] = y;
+			}
+			else if (map[y][x] >= ENTRY_START && map[y][x] < ENTRY_START + POTAL_MAX)
+			{
+				Entry_Potal[map[y][x] - ENTRY_START][X] = x;
+				Entry_Potal[map[y][x] - ENTRY_START][Y] = y;
+			}
+			else if (map[y][x] >= EXIT_START && map[y][x] < EXIT_START + POTAL_MAX)
+			{
+				Exit_Potal[map[y][x] - EXIT_START][X] = x;
+				Exit_Potal[map[y][x] - EXIT_START][Y] = y;
+			}
+			else if (map[y][x] >= TRIGGER_BUTTON && map[y][x] < TRIGGER_BUTTON + TRIGGER_MAX)
+			{
+				Trigher_button[map[y][x] - TRIGGER_BUTTON][X] = x;
+				Trigher_button[map[y][x] - TRIGGER_BUTTON][Y] = y;
+			}
+			else if (map[y][x] >= TRIGGER_WALL && map[y][x] < TRIGGER_WALL + TRIGGER_MAX)
+			{
+				Trigher_wall[map[y][x] - TRIGGER_WALL][X] = x;
+				Trigher_wall[map[y][x] - TRIGGER_WALL][Y] = y;
+			}
+			else if (map[y][x] == GOAL)
+			{
+				goal[X] = x;
+				goal[Y] = y;
+			}
+			else if (map[y][x] >= TRAP && map[y][x] < TRAP + TRAP_MAX)
+			{
+				trap[map[y][x] - TRAP][X] = x;
+				trap[map[y][x] - TRAP][Y] = y;
+			}
+			else if (map[y][x] >= BIZZ && map[y][x] < BIZZ + BIZZ_MAX)
+			{
+				bizz[map[y][x] - BIZZ][X] = x;
+				bizz[map[y][x] - BIZZ][Y] = y;
+			}
+			else if (map[y][x] >= DOOR && map[y][x] < DOOR + BIZZ_MAX)
+			{
+				door[map[y][x] - DOOR][X] = x;
+				door[map[y][x] - DOOR][Y] = y;
+				door[map[y][x] - DOOR][2] = DOOR_CLOSE;
+			}
+			else if (map[y][x] >= HOLE && map[y][x] < HOLE + BIZZ_MAX)
+			{
+				hole[map[y][x] - HOLE][X] = x;
+				hole[map[y][x] - HOLE][Y] = y;
+				hole[map[y][x] - HOLE][2] = DOOR_OPEN;
+			}
+		}
+	}
+}
+void MapDraw()
+{
+	for (int y = 0; y < HEIGHT; y++)
+	{
+		for (int x = 0; x < WIDTH; x++)
+		{
+			if (map[y][x] == WALL)
+				printf("▩");
+			else if (map[y][x] == CHARACTER)
+			{
+				BLUE
+					printf("★");
+				ORIGINAL
+			}
+			else if (map[y][x] >= ENTRY_START && map[y][x] < ENTRY_START + POTAL_MAX)
+			{
+				BLUE
+					printf("◎");
+				ORIGINAL
+			}
+			else if (map[y][x] >= EXIT_START && map[y][x] < EXIT_START + POTAL_MAX)
+			{
+				YELLOW
+					printf("●");
+				ORIGINAL
+			}
+			else if (map[y][x] >= TRIGGER_BUTTON && map[y][x] < TRIGGER_BUTTON + TRIGGER_MAX)
+			{
+				BLOOD
+					printf("☎");
+				ORIGINAL
+			}
+			else if (map[y][x] >= TRIGGER_WALL && map[y][x] < TRIGGER_WALL + TRIGGER_MAX)
+			{
+				BLOOD
+					printf("‡");
+				ORIGINAL
+			}
+			else if (map[y][x] == GOAL)
+			{
+				GOLD
+					printf("☞");
+				ORIGINAL
+			}
+			else if (map[y][x] >= TRAP && map[y][x] < TRAP + TRAP_MAX)
+			{
+				GRAY
+					printf("▦");
+				ORIGINAL
+			}
+			else if (map[y][x] >= BIZZ && map[y][x] < BIZZ + BIZZ_MAX)
+			{
+				PUPPLE
+					printf("◆");
+				ORIGINAL
+			}
+			else if (map[y][x] >= DOOR && map[y][x] < DOOR + BIZZ_MAX)
+			{
+				if (door[map[y][x] - DOOR][2] != DOOR_CLOSE)
+				{
+					printf("  ");
+				}
+				else
+				{
+					YELLOW
+						printf("▤");
+					ORIGINAL
+				}
+
+			}
+			else if (map[y][x] >= HOLE && map[y][x] < HOLE + BIZZ_MAX)
+			{
+				BLOOD
+					printf("◇");
+				ORIGINAL
+			}
+			else if (map[y][x] == NULL)
+				printf("  ");
+		}
+		printf("\n");
+	}
+}
+
+
+void MoveCheck()
+{
+	int index = map[character[Y]][character[X]];
+	if (index >= ENTRY_START && index < ENTRY_START + POTAL_MAX)
+	{
+		character[X] = Exit_Potal[index - ENTRY_START][X];
+		character[Y] = Exit_Potal[index - ENTRY_START][Y];
+	}
+	if (index == GOAL)
+	{
+		EXIT = 0;
+	}
+	if (index >= TRIGGER_BUTTON && index < TRIGGER_BUTTON + TRIGGER_MAX)
+	{
+		for (int a = 0; a < HEIGHT; a++)
+		{
+			for (int b = 0; b < WIDTH; b++)
+			{
+				if (map[a][b] == index + 10)
+					map[a][b] = NULL;
+				if (map[a][b] == index)
+					map[a][b] = NULL;
+			}
+		}
+	}
+	if (index >= TRAP && index < TRAP + TRAP_MAX)
+	{
+		character[X] = RESTART_X;
+		character[Y] = RESTART_Y;
+	}
+
+	//for (int a = 0; a < BIZZ_MAX; a++)   //bizz 와 hole 이 겹칠경우 door를 오픈한다
+	//{
+	//	for (int b = 0; b < BIZZ_MAX; b++)
+	//	{
+
+	//		if (bizz[b][X] == hole[a][X] && bizz[b][Y] == hole[a][Y])
+	//		{
+	//			door[b][2] = DOOR_OPEN;
+	//			break;
+	//		}
+	//		else
+	//		{
+	//			door[b][2] = DOOR_CLOSE;
+	//		}
+
+	//	}
+	//}
+
+	for (int index = 0; index < BIZZ_MAX; index++)
+	{
+		if (map[hole[index][Y]][hole[index][X]] >= BIZZ && map[hole[index][Y]][hole[index][X]] < BIZZ + BIZZ_MAX)
+		{
+			door[index][2] = DOOR_OPEN;
+		}
+		else
+			door[index][2] = DOOR_CLOSE;
+	}
+
+}
+
+
+int movetest(int a) //만든 벽을 못 지나가게 만드는 함수 //수정 도어 배열 2번값 바인드
+{
+	if (a >= DOOR && a < DOOR + BIZZ_MAX)
+	{
+		if (door[a - DOOR][2] == DOOR_CLOSE)
+			return BIND;
+		else
+		{
+			return FREE;
+		}
+	}
+	else if (a >= TRIGGER_WALL && a < TRIGGER_MAX + TRIGGER_WALL)
+		return BIND;
+	else
+		return FREE;
+}
+
+int bizzcloser(int a) //구슬이 서로 겹쳐지지 않게하는 함수
+{
+	if (a >= BIZZ && a < BIZZ + BIZZ_MAX)
+		return BIND;
+	else
+		return FREE;
+
+}
+
+void bizzmove(int a, char ch) // 캐릭터 좌표가 구슬이랑 겹칠경우 구슬를 움직여 주는 함수 
+{
+	int bizznum = a - BIZZ;
+
+	system("cls");
+	map[bizz[bizznum][Y]][bizz[bizznum][X]] = bizzobjectindex[bizznum];
+	switch (ch)
+	{
+	case LEFT:
+		if (map[bizz[bizznum][Y]][bizz[bizznum][X] - 1] != WALL)
+		{
+			if (bizzcloser(map[bizz[bizznum][Y]][bizz[bizznum][X] - 1]) == BIND)
+				break;
+
+			bizz[bizznum][X]--;
+		}
+		break;
+	case RIGHT:
+		if (map[bizz[bizznum][Y]][bizz[bizznum][X] + 1] != WALL)
+		{
+			if (bizzcloser(map[bizz[bizznum][Y]][bizz[bizznum][X] + 1]) == BIND)
+				break;
+
+			bizz[bizznum][X]++;
+		}
+		break;
+	case UP:
+		if (map[bizz[bizznum][Y] - 1][bizz[bizznum][X]] != WALL)
+		{
+			if (bizzcloser(map[bizz[bizznum][Y] - 1][bizz[bizznum][X]]) == BIND)
+				break;
+
+			bizz[bizznum][Y]--;
+
+		}
+		break;
+	case DOWN:
+		if (map[bizz[bizznum][Y] + 1][bizz[bizznum][X]] != WALL)
+		{
+			if (bizzcloser(map[bizz[bizznum][Y] + 1][bizz[bizznum][X]]) == BIND)
+				break;
+
+			bizz[bizznum][Y]++;
+		}
+		break;
+	}
+	bizzobjectindex[bizznum] = map[bizz[bizznum][Y]][bizz[bizznum][X]];
+	map[bizz[bizznum][Y]][bizz[bizznum][X]] = a;
+}
+
+void Move()
+{
+	char ch;
+	ch = getch();
+	system("cls");
+	map[character[Y]][character[X]] = LastObjectIndex;
+	switch (ch)
+	{
+
+	case LEFT:
+		if (map[character[Y]][character[X] - 1] != WALL && movetest(map[character[Y]][character[X] - 1]))
+		{
+			if (map[character[Y]][character[X] - 1] >= BIZZ && map[character[Y]][character[X] - 1] < BIZZ + BIZZ_MAX)
+			{
+				bizzmove(map[character[Y]][character[X] - 1], ch);
+				break;
+			}
+			character[X]--;
+		}
+		break;
+	case RIGHT:
+		if (map[character[Y]][character[X] + 1] != WALL && movetest(map[character[Y]][character[X] + 1]))
+		{
+			if (map[character[Y]][character[X] + 1] >= BIZZ && map[character[Y]][character[X] + 1] < BIZZ + BIZZ_MAX)
+			{
+				bizzmove(map[character[Y]][character[X] + 1], ch);
+				break;
+			}
+			character[X]++;
+		}
+		break;
+	case UP:
+		if (map[character[Y] - 1][character[X]] != WALL && movetest(map[character[Y] - 1][character[X]]))
+		{
+			if (map[character[Y] - 1][character[X]] >= BIZZ && map[character[Y] - 1][character[X]] < BIZZ + BIZZ_MAX)
+			{
+				bizzmove(map[character[Y] - 1][character[X]], ch);
+				break;
+			}
+			character[Y]--;
+		}
+		break;
+	case DOWN:
+		if (map[character[Y] + 1][character[X]] != WALL && movetest(map[character[Y] + 1][character[X]]))
+		{
+			if (map[character[Y] + 1][character[X]] >= BIZZ && map[character[Y] + 1][character[X]] < BIZZ + BIZZ_MAX)
+			{
+				bizzmove(map[character[Y] + 1][character[X]], ch);
+				break;
+			}
+			character[Y]++;
+		}
+		break;
+		//   case SPACEBAR: //구슬위치 리셋 미구현
+		   //   break;
+	}
+
+	MoveCheck();
+	LastObjectIndex = map[character[Y]][character[X]];
+	map[character[Y]][character[X]] = CHARACTER;
+}
+
+
+
+void main()
+{
+	Init();
+	while (EXIT)
+	{
+		MapDraw();
+		Move();
+	}
+}

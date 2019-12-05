@@ -1,0 +1,103 @@
+#include<stdio.h>
+#define TRUE 1
+#define FALSE 0
+int compare_big(int a, int b);
+int odd_or_even_num(int a);
+int adsoulutenum(int a);
+int three_multiple(int a);
+int inversenum(int a);
+
+
+void main()
+{
+	int a, b;
+	printf("1. 두 수를 입력하시오 : ");
+	scanf("%d%d", &a, &b);
+	printf("%d와 %d중 큰 수는 %d 입니다.\n", a, b, compare_big(a, b));
+
+	printf("2. 정수를 하나 입력하시오 : ");
+	scanf("%d", &a);
+	if (odd_or_even_num(a))
+		printf("%d는 짝수입니다.\n", a);
+	else
+		printf("%d는 홀수입니다.\n", a);
+
+	printf("3. 정수를 하나 입력하시오 : ");
+	scanf("%d", &a);
+	printf("%d의 절대값 : %d\n", a, adsoulutenum(a));
+
+	printf("4. 정수를 하나 입력하시오 : ");
+	scanf("%d", &a);
+	for (int n = 1; n <= a; n++)
+	{
+		if (three_multiple(n))
+			printf("%d,", n);
+	}
+	printf("\b \n");
+
+	printf("5. 정수를 하나 입력하시오 : ");
+	scanf("%d", &a);
+	printf("%d의 거꾸로 수 : %d", a, inversenum(a));
+}
+
+int compare_big(int a, int b)
+{
+	if (a >= b)
+		return a;
+	else
+		return b;
+}
+
+int odd_or_even_num(int a)
+{
+	if (a % 2 == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+int adsoulutenum(int a)
+{
+	if (a < 0)
+		return -a;
+	else
+		return a;
+}
+
+int three_multiple(int a)
+{
+	if (a % 3 == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+int inversenum(int a)
+{
+	int num=a,answer=0;
+
+	if (a < 10)
+	{
+		return a;
+	}else
+	{
+		for (int i = 1; i <= a;i *= 10)
+		{
+			if (i == 1)
+			{
+				answer += num % 10;
+				num /= 10;
+			}
+			else
+			{
+				answer *= 10;
+				answer += (num % 10);
+				if (num >= 10)
+					num /= 10;
+			}
+		}
+		return answer;
+	}
+}
+		
+

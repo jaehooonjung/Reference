@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+int main(void) {
+	int height;
+	printf("높이를 설정하세요 : ");
+	scanf("%d", &height);
+	for (int num = 0; num<height; num++)
+	{
+		for (int wide = height - num; wide <= height; wide++)
+		{
+			printf("★");
+		}
+		printf("\n");
+	}
+
+}

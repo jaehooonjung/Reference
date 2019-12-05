@@ -1,0 +1,15 @@
+#include<stdio.h>
+
+void main() {
+	int diskprice = 5000, ea, total = 0;
+	printf("구매할 디스켓 갯수를 입력하시오 : ");
+	scanf("%d", &ea);
+	if (ea > 100) 
+		total = (diskprice*ea) - (diskprice*ea)*0.12;
+	else if (ea > 10)
+		total = (diskprice*ea) - (diskprice*ea)*0.1;
+	else
+		total = diskprice*ea;
+	printf("디스크 %d개 가격 : %d", ea, total);
+
+}

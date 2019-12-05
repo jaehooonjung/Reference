@@ -1,0 +1,22 @@
+#include<stdio.h>
+#include<string.h>
+
+void S_Copy(char name[], char myname[])
+{
+	int i = 0;
+	for (i; myname[i] != NULL ; i++)
+	{
+		name[i]=myname[i] ;
+	}
+	name[i] = NULL;
+}
+
+void main()
+{
+	char name[10];
+	char myname[10] = "jungho";
+
+	S_Copy(name, myname);
+	printf("name : %s\n", name);
+	printf("myname : %s\n", myname);
+}

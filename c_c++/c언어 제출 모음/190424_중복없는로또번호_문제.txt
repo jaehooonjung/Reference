@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> // 시간값 사용하는 헤더파일
+#define LOTTO_NUM 6
+#define TRUE 1
+#define FALSE 0
+
+void main()
+{
+	int RNum;
+	int Lotto[LOTTO_NUM] = { 0 };
+	srand((unsigned)time(NULL));
+	while (TRUE)
+	{
+		system("cls");
+		for (int i = 0; i <= LOTTO_NUM; i++)
+		{
+			RNum = (rand() % 45) + 1;
+			if (i > 0)
+			{
+				int real = TRUE;
+				for (int a = 0; a < i; a++)
+				{
+					if (Lotto[a] == RNum)
+						real = FALSE;
+				}
+				if (real == FALSE)
+				{
+					i--;
+					continue;
+				}
+			}
+			Lotto[i] = RNum;
+		}
+		for (int i = 0; i < LOTTO_NUM; i++)
+		{
+			printf("%d. %d\n",i+1,Lotto[i]);
+		}
+		printf("\b");
+		system("pause");
+
+	}
+}

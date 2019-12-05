@@ -1,0 +1,23 @@
+#include<stdio.h>
+
+void main()
+{
+	int w, h;
+	printf("사각형 가로길이 입력 : ");
+	scanf("%d", &w);
+	printf("사각형 높이 입력 : ");
+	scanf("%d", &h);
+
+	for (int a = 1; a <= h; a++)
+	{
+		for (int b = 1; b <= w; b++)
+		{
+			if (1<a&&a<h&& w>b&&b> 1) //가끔은 반대로 생각해보는 것도 좋다.
+				printf("  "); 		//별과 공백의 출력을 바꾸는 것도 해보자
+			else
+				printf("★");
+		}
+		printf("\n");
+	}
+
+}

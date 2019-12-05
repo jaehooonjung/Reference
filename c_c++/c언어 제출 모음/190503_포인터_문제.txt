@@ -1,0 +1,78 @@
+#include<stdio.h>
+
+void ConvertToUppercase(char string[])
+{
+	for (int size = 0; size < (sizeof(string) / sizeof(char)); size++)
+	{
+		if ((string[size]) >= 'a' && (string[size]) <= 'z')
+			(string[size]) -= 32;
+	}
+}
+
+void CompareMax(int *num1, int *num2, int *max)
+{
+	if (*num1 > *num2)
+		*max = *num1;
+	else
+		*max = *num2;
+}
+
+void Sum(int *num1, int *sum)
+{
+	for (int tmp = 1; tmp <= *num1; tmp++)
+		*sum += tmp;
+}
+
+void Ascending_Order(int ascendingorder[])
+{
+	int tmp;
+	for (int a = 0; a < 6; a++)
+	{
+		for (int b = a + 1; b < 7; b++)
+		{
+			if (ascendingorder[a] > ascendingorder[b])
+			{
+				tmp = ascendingorder[a];
+				ascendingorder[a] = ascendingorder[b];
+				ascendingorder[b] = tmp;
+			}
+		}
+	}
+
+}
+
+int main()
+{
+	char string[20];
+	int num1, num2, max, sum = 0, ascendingorder[7];
+
+	printf("1. 문자열을 입력하시오 : "); 
+	scanf("%s", string);
+	printf("함수 호출 전 = %s\n", string);
+	ConvertToUppercase(string);
+	printf("함수 호출 후 = %s\n", string);
+
+	printf("2. 두 정수를 입력하시오 : ");
+	scanf("%d%d", &num1, &num2);
+	CompareMax(&num1, &num2, &max);
+	printf("%d와(과)%d중 큰 수는 %d\n", num1, num2, max);
+
+	printf("3.정수를 입력하시오 : ");
+	scanf("%d", &num1);
+	Sum(&num1, &sum);
+	printf("1 ~ %d 의 총 합 : %d\n", num1, sum);
+
+	printf("4. 오름차순 정렬\n");
+	for (int tmp = 0; tmp < 7; tmp++)
+	{
+		printf("[%d]번째 정수 입력 : ", tmp);
+		scanf("%d", &ascendingorder[tmp]);
+	}
+	printf("정렬 전: ");
+	for (int tmp = 0; tmp < 7; tmp++)
+		printf("%d ", ascendingorder[tmp]);
+	Ascending_Order(ascendingorder);
+	printf("\n정렬 후 : ");
+	for (int tmp = 0; tmp < 7; tmp++)
+		printf("%d ", ascendingorder[tmp]);
+}

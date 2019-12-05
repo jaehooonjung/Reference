@@ -1,0 +1,205 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<Windows.h>
+#include<string.h>
+#define MAX 50
+#define NAME_LENGTH 25
+#define CLASS_MAX 3
+
+typedef struct student
+{
+	char Name[NAME_LENGTH];
+	int Age;
+	int Class;
+	int Number;
+	char Gender[10];
+}Student;
+
+void SetStudent(Student *St, int*StudentCount);
+void ShowStudent(Student *St);
+void ShowStudent_Class(Student*St, int class_num);
+void search_Student(Student*St, char *search_name);
+void StudentErase(Student*St, int*StudentCount);
+void load(Student*St, FILE*f);
+
+void main()
+{
+	Student* Student_List[MAX];
+	int select;
+	int class_num = 1;
+	int StudentCount = 0;
+	char search_name[NAME_LENGTH];
+	FILE*f;
+
+	while (1)
+	{
+		system("cls");
+		printf("=====학생관리프로그램======(총 인원 : %d)\n", StudentCount);
+		printf("1. 학생 등록\n");
+		printf("2. 학생 목록(번호순)\n");
+		printf("3. 학생 목록(학년순)\n");
+		printf("4. 학년 검색\n");
+		printf("5. 학생 검색\n");
+		printf("6. 마지막 학생 삭제\n");
+		printf("7. 학생 전체 삭제\n");
+		printf("8. 학생정보 저장\n");
+		printf("9. 학생정보 불러오기\n");
+		printf("10. 종료\n");
+		printf("입력 : ");
+		scanf("%d", &select);
+		system("cls");
+		switch (select)
+		{
+		case 1:
+			if (StudentCount + 1 >= MAX)
+			{
+				printf("학생정원(50명)이 모두 찼습니다.\n");
+				break;
+			}
+			Student_List[StudentCount] = (Student*)malloc(sizeof(Student));
+			SetStudent(Student_List[StudentCount], &StudentCount);
+			break;
+		case 2:
+			for (int i = 0; i < StudentCount; i++)
+				ShowStudent(Student_List[i]);
+			break;
+		case 3:
+			for (class_num; class_num <= CLASS_MAX; class_num++)
+			{
+				printf("┌───────  %d 학년───────┐\n", class_num);
+				for (int i = 0; i < StudentCount; i++)
+					ShowStudent_Class(Student_List[i], class_num);
+				printf("└───────────────────────┘\n");
+			}
+			class_num = 1;
+			break;
+		case 4:
+			printf("검색할 학년 입력 (1 ~ %d) : ", CLASS_MAX);
+			scanf("%d", &class_num);
+			if (class_num <= CLASS_MAX && class_num >= 1)
+			{
+				printf("학년 잘못 입력(범위 1~%d학년)\n", CLASS_MAX);
+				system("pause");
+			}
+			printf("┌───────  %d 학년───────┐\n", class_num);
+			for (int i = 0; i < StudentCount; i++)
+				ShowStudent_Class(Student_List[i], class_num);
+			printf("└───────────────────────┘\n");
+			break;
+		case 5:
+			printf("검색할 이름 입력 : ");
+			scanf("%s", search_name);
+			for (int i = 0; i < StudentCount; i++)
+				search_Student(Student_List[i], search_name);
+			break;
+		case 6://마지막 학생 삭제
+			if (StudentCount - 1 < 0)
+			{
+				printf("더 이상 삭제할 학생이 없습니다.\n");
+				system("pause");
+				break;
+			}
+			else
+				StudentErase(Student_List[(StudentCount - 1)], &StudentCount);
+			break;
+		case 7: // 전체 삭제
+			for (int i = 0; i < StudentCount; i++)
+				StudentErase(Student_List[i], &StudentCount);
+			StudentCount = NULL;
+			break;
+		case 8: //세이브
+			f = fopen("Student_system.txt", "w");
+			fprintf(f, "%d\n", StudentCount);
+			for (int i = 0; i < StudentCount; i++)
+				fprintf(f, "%s %d %d %d %s\n", Student_List[i]->Name, Student_List[i]->Age, Student_List[i]->Class, Student_List[i]->Number, Student_List[i]->Gender);
+			fclose(f);
+			break;
+		case 9: //로드
+			for (int i = 0; i < StudentCount; i++)
+			{
+				printf("%s학생 동적할당 해제 완료\n", Student_List[i]->Name);
+				free(Student_List[i]);
+			}
+
+			f = fopen("Student_system.txt", "r");
+			if (f == NULL)
+				printf("해당 이름의 파일이 없습니다.");
+			else
+			{
+				fscanf(f, "%d", &StudentCount);
+				for (int i = 0; i < StudentCount; i++)
+				{			
+					Student_List[i] = (Student*)malloc(sizeof(Student));
+					load(Student_List[i],f);
+				}
+				fclose(f);
+			}
+			break;
+		case 10:
+			for (int i = 0; i < StudentCount; i++)
+			{
+				printf("%s학생 동적할당 해제 완료\n", Student_List[i]->Name);
+				free(Student_List[i]);
+			}
+
+			return;
+		}
+		system("pause");
+	}
+}
+
+void SetStudent(Student* St, int *StudentCount)
+{
+	St->Number = ++*StudentCount;
+	printf("======%d번 학생======\n", St->Number);
+	printf("이름 입력 : ");
+	scanf("%s", St->Name);
+	printf("나이 입력 : ");
+	scanf("%d", &St->Age);
+	printf("성별 입력 : ");
+	scanf("%s", St->Gender);
+	printf("학년 입력 (%d이 최고학년 입니다.) : ", CLASS_MAX);
+	scanf("%d", &St->Class);
+	while (St->Class > CLASS_MAX || St->Class <= 0)
+	{
+		printf("학년 입력 (%d이 최고학년 입니다.) : ", CLASS_MAX);
+		scanf("%d", &St->Class);
+	}
+}
+void ShowStudent(Student *St)
+{
+	printf("======%s학생(%d번)======\n", St->Name, St->Number);
+	printf("나이 : %d,  성별 : %s,  학년 : %d\n", St->Age, St->Gender, St->Class);
+	printf("======================\n");
+}
+
+void ShowStudent_Class(Student*St, int class_num)
+{
+	if (St->Class == class_num)
+		ShowStudent(St);
+}
+
+void search_Student(Student*St, char*search_name)
+{
+	if (strcmp(St->Name, search_name) == 0)
+		ShowStudent(St);
+}
+
+void StudentErase(Student*St, int*StudentCount)
+{
+	sprintf(St->Name, "%s", NULL);
+	St->Age = NULL;
+	sprintf(St->Gender, "%s", NULL);
+	St->Class = NULL;
+	--*StudentCount;
+	free(St);
+}
+
+void load(Student*St, FILE*f)
+{
+	fscanf(f, "%s", St->Name);
+	fscanf(f, "%d", &St->Age);
+	fscanf(f, "%d", &St->Class);
+	fscanf(f, "%d", &St->Number);
+	fscanf(f, "%s", St->Gender);
+}

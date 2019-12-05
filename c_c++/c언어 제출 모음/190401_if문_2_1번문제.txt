@@ -1,0 +1,28 @@
+#include<stdio.h>
+
+void main() {
+	int kor, eng, math,sum;
+	float avg;
+	printf("1.번문제\n세과목의 점수를 입력하시오\n");
+	printf("국어 점수 : ");
+	scanf("%d", &kor);
+	printf("수학 점수 : ");
+	scanf("%d", &math);
+	printf("영어 점수 : ");
+	scanf("%d", &eng);
+	printf("국어점수 : %d\t수학점수 : %d\t영어점수 : %d\n",kor,math,eng);
+	sum = kor + eng + math;
+	avg = (float)(kor + math + eng) / 3.0;
+	printf("총합점수 : %d\t평균점수 : %.2f\t등급 : ", sum,avg);
+	if (avg > 90)
+		printf("A");
+	else if (avg > 80)
+		printf("B");
+	else if (avg > 70)
+		printf("C");
+	else if (avg > 60)
+		printf("D");
+	else if (avg < 60)
+		printf("F");
+}
+

@@ -1,0 +1,21 @@
+#include<stdio.h>
+
+void main() {
+int time, totalprice=0, price=3000, addprice=500;
+printf("승마 이용시간을 입력하시오 : ");
+scanf("%d", &time);
+
+if (time > 0) {
+totalprice += price;
+}
+if (time>30)
+{
+totalprice += (time-30)/10*addprice;
+if (time % 10 > 0)
+{
+totalprice += addprice;
+}
+}
+
+printf("%d분 탑승요금 : %d\n", time, totalprice);
+}
